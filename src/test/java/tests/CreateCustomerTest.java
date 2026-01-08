@@ -8,8 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import pages.LoginPage;
-import pages.ManagerPage;
+import pages.*;
 
 import java.sql.Driver;
 import java.time.Duration;
@@ -32,64 +31,24 @@ public class CreateCustomerTest {
         ManagerPage managerPage = new ManagerPage(driver);
         managerPage.createCustomer();
 
-        WebElement firstNameElement = driver.findElement(By.xpath("//input[@placeholder='First Name']"));
         String firstNameValue = "Mihaela";
-        firstNameElement.sendKeys(firstNameValue);
-
-        WebElement lastNameElement = driver.findElement(By.xpath("//input[@placeholder='Last Name']"));
         String lastNameValue = "Moga";
-        lastNameElement.sendKeys(lastNameValue);
-
-        WebElement postCodeElement = driver.findElement(By.xpath("//input[@placeholder='Post Code']"));
         String postCodeValue = "550362";
-        postCodeElement.sendKeys(postCodeValue);
 
-        WebElement submitCustomerElement = driver.findElement(By.xpath("//button[@class='btn btn-default']"));
-        submitCustomerElement.click();
+        CustomerPage customerPage = new CustomerPage(driver);
+        customerPage.createCustomerProcess(firstNameValue, lastNameValue, postCodeValue);
+        customerPage.openAccount();
 
-        Alert customerAlert = driver.switchTo().alert();
-        String customerAlertText = customerAlert.getText();
-        System.out.println(customerAlertText);
-        customerAlert.accept();
-
-        WebElement openAccount = driver.findElement(By.xpath("//button[@ng-click='openAccount()']"));
-        openAccount.click();
-
-        WebElement customerName = driver.findElement(By.id("userSelect"));
-        Select customerSelect = new Select(customerName);
         String fullName = firstNameValue + " " + lastNameValue;
-        customerSelect.selectByVisibleText(fullName);
-
-        WebElement currency = driver.findElement(By.id("currency"));
-        Select currencySelect = new Select(currency);
         String currencyValue = "Dollar";
-        currencySelect.selectByVisibleText(currencyValue);
 
-        WebElement process = driver.findElement(By.xpath("//button[@type='submit']"));
-        process.click();
+        AccountPage accountPage = new AccountPage(driver);
+        accountPage.createAccountProcess(fullName, currencyValue);
+        accountPage.openCustomersPage();
 
-        Alert accountAlert = driver.switchTo().alert();
-        String accountAlertText = customerAlert.getText();
-        System.out.println(accountAlertText);
-        String [] accountsArray = accountAlertText.split(":");
-        String accountNumber = accountsArray[1];
-        System.out.println(accountsArray[1]);
-        accountAlert.accept();
-
-        WebElement customers = driver.findElement(By.xpath("//button[@ng-click='showCust()']"));
-        customers.click();
-
-        WebElement searchCustomerElement = driver.findElement(By.xpath("//input[@placeholder='Search Customer']"));
-        searchCustomerElement.sendKeys(firstNameValue);
-
-        List<WebElement> tableRows = driver.findElements(By.xpath("//tbody/tr"));
-        String customerTableRow = tableRows.get(0).getText();
-        Assert.assertTrue(customerTableRow.contains(firstNameValue));
-        Assert.assertTrue(customerTableRow.contains(lastNameValue));
-        Assert.assertTrue(customerTableRow.contains(postCodeValue));
-        Assert.assertTrue(customerTableRow.contains(accountNumber));
-
-        WebElement deleteCustomerElement = driver.findElement(By.xpath("//button[@ng-click='deleteCust(cust)']"));
-        deleteCustomerElement.click();
+        CustomersPage customersPage = new CustomersPage(driver);
+        customersPage.searchCustomer(firstNameValue);
+        customersPage.validateCustomer(firstNameValue, lastNameValue, postCodeValue);
+        customersPage.deleteCustomer();
     }
 }

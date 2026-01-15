@@ -1,42 +1,32 @@
 package tests;
 
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
+import models.CustomerModel;
 import org.testng.annotations.Test;
 import pages.CustomerPage;
 import pages.LoginPage;
 import pages.ManagerPage;
+import sharedData.SharedData;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
-public class CreateCustomersTest {
-    public WebDriver driver;
+public class CreateCustomersTest extends SharedData {
 
     @Test
-
     public void automationTest(){
-        driver = new ChromeDriver();
-        driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login");
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        CustomerModel testData = new CustomerModel("src/test/resources/CustomersData.json");
 
-        LoginPage loginPage = new LoginPage(driver);
+        LoginPage loginPage = new LoginPage(getDriver());
         loginPage.logInBankManager();
 
-        ManagerPage managerPage = new ManagerPage(driver);
+        ManagerPage managerPage = new ManagerPage(getDriver());
         managerPage.createCustomer();
 
         List<String> firstirstNameValueList = Arrays.asList("Mihaela1", "Mihaela2", "Mihaela3");
         List<String> lastNameValueList = Arrays.asList("Moga1", "Moga2", "Moga3");
         List<String> postCodeValueList = Arrays.asList("550362A", "550362B", "550362C");
 
-        CustomerPage customerPage = new CustomerPage(driver);
+        CustomerPage customerPage = new CustomerPage(getDriver());
         customerPage.createCustomersProcess(firstirstNameValueList, lastNameValueList, postCodeValueList);
     }
 }

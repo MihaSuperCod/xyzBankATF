@@ -1,40 +1,36 @@
 package pages;
 
+import models.CustomerModel;
 import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
-public class AccountPage {
-    public WebDriver driver;
-
-    public AccountPage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
-    }
-
+public class AccountPage extends BasePage {
     @FindBy(id = "userSelect")
-    public WebElement customerName;
+    private WebElement customerName;
 
     @FindBy(id = "currency")
-    public  WebElement currency;
+    private  WebElement currency;
 
     @FindBy(xpath= "//button[@type='submit']")
-    public WebElement processButton;
+    private WebElement processButton;
 
     @FindBy(xpath = "//button[@ng-click='showCust()']")
-    public WebElement customers;
+    private WebElement customers;
 
-    public void createAccountProcess(String fullName, String currencyValue){
+    public AccountPage(WebDriver driver) {
+        super(driver);
+    }
+
+    public void createAccountProcess(CustomerModel testData){
 
         Select customerSelect = new Select(customerName);
-        customerSelect.selectByVisibleText(fullName);
+        customerSelect.selectByVisibleText(testData.getFullNameValue());
 
         Select currencySelect = new Select(currency);
-        currencySelect.selectByVisibleText(currencyValue);
+        currencySelect.selectByVisibleText(testData.getCurrencyValue());
 
         processButton.click();
 
